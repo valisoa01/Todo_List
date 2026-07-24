@@ -1,1 +1,1 @@
- enum Priority_enum { low, medium, high }
+ enum Priority { low, medium, high }

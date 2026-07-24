@@ -1,20 +1,20 @@
- 
 import 'priority_enum.dart';
+
 class Task {
   String _title;
-  Priority_enum _priority_enum;
+  Priority _priority;
   DateTime _deadline;
 
   Task({
     required String title,
-    required Priority_enum priority_enum,
+    required Priority priority,
     required DateTime deadline,
   })  : _title = title,
-        _priority_enum = priority_enum,
+        _priority = priority,
         _deadline = deadline;
 
   String get title => _title;
-  Priority_enum get priority_enum => _priority_enum;
+  Priority get priority => _priority;
   DateTime get deadline => _deadline;
 
   set title(String value) {
@@ -23,8 +23,8 @@ class Task {
     }
   }
 
-  set priority_enum(Priority_enum value) {
-    _priority_enum = value;
+  set priority(Priority value) {
+    _priority = value;
   }
 
   set deadline(DateTime value) {
@@ -33,16 +33,18 @@ class Task {
 
   Task copyWith({
     String? title,
-    Priority_enum? priority_enum,
+    Priority? priority,
     DateTime? deadline,
   }) {
     return Task(
       title: title ?? _title,
-      priority_enum: priority_enum ?? _priority_enum,
+      priority: priority ?? _priority,
       deadline: deadline ?? _deadline,
     );
   }
 
   @override
-  String toString() => 'DartItem(_title: $_title, _priority_enum: $_priority_enum, _deadline: $_deadline)';
+  String toString() {
+    return 'Task(title: $_title, priority: $_priority, deadline: $_deadline)';
+  }
 }
