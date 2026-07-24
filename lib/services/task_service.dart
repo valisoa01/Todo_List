@@ -10,13 +10,13 @@ class TaskService {
   void addTask (Task task) {
     _repository.add(task);
   }
-  List<Task> getTastks() {
+  List<Task> getTasks() {
     return _repository.getAll();
   }
   void removeTask(Task task) {
     _repository.remove(task);
   }
-  void updateTask (oldTask, Task newTask) {
+  void updateTask (Task oldTask, Task newTask) {
     _repository.update(oldTask, newTask);
   }
 }
