@@ -1,0 +1,13 @@
+name: todo_list
+description: Application de gestion de tâches en ligne de commande (Dart).
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^4.0.0
