@@ -43,8 +43,26 @@ class Task {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "title": _title,
+      "priority": _priority.name,
+      "deadline": _deadline.toIso8601String(),
+    };
+  }
+
+  factory Task.fromJson(Map<String, dynamic> json) {
+    return Task(
+      title: json["title"],
+      priority: Priority.values.firstWhere(
+        (p) => p.name == json["priority"],
+      ),
+      deadline: DateTime.parse(json["deadline"]),
+    );
+  }
+
   @override
   String toString() {
-    return 'Task(title: $_title, priority: $_priority, deadline: $_deadline)';
+    return "Task(title: $_title, priority: $_priority, deadline: $_deadline)";
   }
 }

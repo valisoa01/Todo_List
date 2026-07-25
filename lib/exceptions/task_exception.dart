@@ -5,7 +5,7 @@ class TaskException implements Exception {
 
   @override
   String toString() {
-    return 'TaskException : $message';
+    return '$runtimeType: $message';
   }
 
 }
