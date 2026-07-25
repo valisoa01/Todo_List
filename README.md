@@ -1,403 +1,114 @@
-#  Task Manager CLI - Dart
+# Todo List CLI — Dart
 
-A command-line **Task Management System** developed in **Dart** to practice Object-Oriented Programming (OOP), Generics, JSON serialization, Exception Handling, Repository Pattern, and Unit Testing.
-
----
-
-##  Project Overview
-
-This application allows users to manage daily tasks through a command-line interface.
-
-Users can:
-
--  Add a task
--  Display all tasks
--  Update a task
--  Delete a task
--  Search a task by title
--  Manage urgent tasks
--  Sort tasks by priority
--  Sort tasks by deadline
--  Save tasks into a JSON file
-- Load tasks from a JSON file
--  Handle custom exceptions
--  Execute unit tests
+Application en ligne de commande de gestion de tâches, développée en **Dart pur** (sans Flutter), pour pratiquer la programmation orientée objet, les génériques, la gestion d'exceptions, la persistance JSON et les tests unitaires.
 
 ---
 
-#  Features
+## Fonctionnalités
 
-- Task creation
-- Task update
-- Task deletion
-- Task search
-- Task sorting
-- JSON serialization
-- File persistence
-- Custom Exceptions
-- Repository Pattern
-- Service Layer
-- Object-Oriented Programming
-- Unit Testing
+- Ajouter une tâche (titre, priorité `low`/`medium`/`high`, date limite optionnelle)
+- Lister toutes les tâches
+- Trier les tâches par priorité ou par échéance
+- Marquer une tâche comme terminée
+- Rechercher une tâche par titre
+- Supprimer une tâche
+- Persister automatiquement les tâches dans `data/task.json`
+- Gérer les erreurs métier via des exceptions personnalisées
 
 ---
 
-#  Project Architecture
+## Architecture du projet
 
 ```
-task_manager/
-
-│
+Todo_List/
 ├── bin/
-│   └── main.dart
-│
+│   └── main.dart                  # Point d'entrée : menu CLI interactif
 ├── lib/
-│   │
 │   ├── models/
 │   │   ├── task.dart
-│   │   ├── urgent_task.dart
+│   │   ├── urgent_task.dart       # hérite de Task
 │   │   └── priority_enum.dart
-│   │
 │   ├── repository/
-│   │   ├── repository.dart
+│   │   ├── repository.dart        # interface générique Repository<T>
 │   │   └── task_repository.dart
-│   │
 │   ├── services/
-│   │   └── task_service.dart
-│   │
-│   ├── exceptions/
-│   │   ├── task_exception.dart
-│   │   ├── invalid_task_exception.dart
-│   │   ├── duplicate_task_exception.dart
-│   │   └── task_not_found_exception.dart
-│   │
-│   └── utils/
-│       └── json_helper.dart
-│
+│   │   ├── task_service.dart      # logique métier
+│   │   └── storage_service.dart   # lecture/écriture du fichier JSON
+│   └── exceptions/
+│       ├── task_exception.dart
+│       ├── invalid_task_exception.dart
+│       ├── duplicate_task_exception.dart
+│       └── task_not_found_exception.dart
+├── utils/
+│   └── json_helper.dart           # encode/decode JSON générique
 ├── data/
-│   └── tasks.json
-│
+│   └── task.json                  # fichier de persistance local
 ├── test/
-│   ├── models/
-│   ├── repository/
-│   ├── services/
-│   ├── exceptions/
-│   └── utils/
-│
+│   ├── task_test.dart
+│   ├── urgent_task_test.dart
+│   ├── task_repository_test.dart
+│   ├── task_service_test.dart
+│   ├── storage_service_test.dart
+│   ├── json_helper_test.dart
+│   └── exception_test.dart
 ├── pubspec.yaml
 └── README.md
 ```
 
 ---
 
-#  Technologies
+## Concepts techniques utilisés
 
-- Dart
-- dart:io
-- dart:convert
-- package:test
-
----
-
-#  Object-Oriented Programming Concepts
-
-This project demonstrates several OOP concepts.
-
-### Encapsulation
-
-Using private attributes with getters and setters.
-
-```dart
-String _title;
-```
+| Exigence | Où |
+|---|---|
+| Classes abstraites + héritage | `Repository<T>` (abstraite), `Task` → `UrgentTask` |
+| Interface | `Repository<T>` implémentée par `TaskRepository` |
+| Génériques | `Repository<T>` |
+| Exceptions personnalisées | `TaskException` et ses sous-classes |
+| Persistance JSON | `StorageService` (lit/écrit `data/task.json` via `JsonHelper`) |
+| Tests unitaires | `package:test`, 7 fichiers, 30+ tests |
 
 ---
 
-### Inheritance
-
-```dart
-class UrgentTask extends Task
-```
-
----
-
-### Abstraction
-
-```dart
-abstract class Repository<T>
-```
-
----
-
-### Generics
-
-```dart
-Repository<Task>
-```
-
----
-
-### Polymorphism
-
-Using implementations of abstract repositories.
-
----
-
-#  Models
-
-## Task
-
-Represents a task.
-
-Attributes:
-
-- title
-- priority
-- deadline
-
-Methods:
-
-- copyWith()
-- toJson()
-- fromJson()
-- toString()
-
----
-
-## UrgentTask
-
-Extends Task.
-
-Additional property:
-
-- alertMessage
-
-Additional behavior:
-
-- sendAlert()
-
----
-
-#  Repository Layer
-
-Repository pattern separates business logic from data storage.
-
-### Generic Repository
-
-```dart
-abstract class Repository<T>
-```
-
-Methods
-
-- add()
-- remove()
-- update()
-- getAll()
-
----
-
-### TaskRepository
-
-Stores tasks inside a List<Task>.
-
----
-
-#  Service Layer
-
-Contains the application's business logic.
-
-Responsibilities:
-
-- Validate tasks
-- Detect duplicate tasks
-- Search tasks
-- Sort tasks
-- Update tasks
-- Remove tasks
-
----
-
-#  Custom Exceptions
-
-Implemented custom exceptions.
-
-- TaskException
-- InvalidTaskException
-- DuplicateTaskException
-- TaskNotFoundException
-
-Example:
-
-```dart
-throw InvalidTaskException(
-    "Task title cannot be empty.");
-```
-
----
-
-#  JSON Serialization
-
-Convert a Task into JSON.
-
-```dart
-task.toJson();
-```
-
-Convert JSON into a Task.
-
-```dart
-Task.fromJson(json);
-```
-
-Example JSON
-
-```json
-{
-  "title": "Learn Dart",
-  "priority": "high",
-  "deadline": "2026-08-01T00:00:00.000"
-}
-```
-
----
-
-#  Data Persistence
-
-Tasks are stored inside
-
-```
-data/tasks.json
-```
-
-The application automatically:
-
-- Reads tasks from JSON
-- Saves new tasks
-- Updates existing tasks
-- Deletes tasks
-
----
-
-#  Console Menu
-
-```
-==============================
-      TASK MANAGER
-==============================
-
-1. Add Task
-2. Show Tasks
-3. Update Task
-4. Delete Task
-5. Search Task
-6. Sort by Priority
-7. Sort by Deadline
-8. Exit
-
-Choose:
-```
-
----
-
-# Unit Testing
-
-Tests are written using
-
-```
-package:test
-```
-
-Covered tests include:
-
-### Models
-
-- Task
-- UrgentTask
-
-### Repository
-
-- add()
-- remove()
-- update()
-- getAll()
-
-### Services
-
-- addTask()
-- updateTask()
-- removeTask()
-- findTaskByTitle()
-- sortByPriority()
-- sortByDeadline()
-
-### Exceptions
-
-- InvalidTaskException
-- DuplicateTaskException
-- TaskNotFoundException
-
-### JSON
-
-- toJson()
-- fromJson()
-- encode()
-- decode()
-
----
-
-# ▶ Installation
-
-Clone the repository
+## Installation
 
 ```bash
 git clone https://github.com/valisoa01/Todo_List.git
-```
-
-Go inside the project
-
-```bash
-cd task_manager
-```
-
-Install dependencies
-
-```bash
+cd Todo_List
 dart pub get
 ```
 
-Run the application
+## Lancer l'application
 
 ```bash
-dart run
+dart run bin/main.dart
 ```
 
-Run tests
+Un menu interactif s'affiche dans le terminal :
+
+```
+1. Ajouter une tâche
+2. Afficher les tâches
+3. Marquer une tâche comme terminée
+4. Supprimer une tâche
+5. Rechercher une tâche par titre
+6. Trier par priorité
+7. Trier par échéance
+8. Quitter
+```
+
+Chaque ajout/modification/suppression est automatiquement sauvegardé dans `data/task.json`, et rechargé au prochain lancement.
+
+## Lancer les tests
 
 ```bash
 dart test
 ```
 
----
-
-#  Learning Objectives
-
-This project was built to practice:
-
-- Dart syntax
-- Object-Oriented Programming
-- Repository Pattern
-- Service Layer
-- Generics
-- Abstract Classes
-- Exception Handling
-- JSON Serialization
-- File Handling
-- Unit Testing
-- Clean Architecture
+Les tests couvrent les modèles, le repository, le service métier (y compris les cas d'erreur), la persistance JSON et les exceptions personnalisées. Les tests utilisent des fichiers temporaires isolés et ne touchent jamais à `data/task.json`.
 
 ---
 
-#  License
+## Licence
 
-This project is created for educational purposes.
+Projet réalisé à des fins pédagogiques.
