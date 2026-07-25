@@ -14,11 +14,16 @@ void main() {
     service = TaskService(repository: TaskRepository());
   });
 
-  Task buildTask(String title, {Priority priority = Priority.medium, DateTime? deadline}) {
+  Task buildTask(
+    String title, {
+    Priority priority = Priority.medium,
+    DateTime? deadline,
+    bool withDeadline = true,
+  }) {
     return Task(
       title: title,
       priority: priority,
-      deadline: deadline ?? DateTime.now(),
+      deadline: withDeadline ? (deadline ?? DateTime.now()) : null,
     );
   }
 
@@ -109,6 +114,23 @@ void main() {
     });
   });
 
+  group('completeTask', () {
+    test('marque une tâche comme terminée', () {
+      final task = buildTask("Réviser");
+      service.addTask(task);
+
+      service.completeTask(task);
+
+      expect(service.getTasks().first.completed, true);
+    });
+
+    test('lève une exception si la tâche est introuvable', () {
+      final task = buildTask("Fantôme");
+
+      expect(() => service.completeTask(task), throwsA(isA<TaskNotFoundException>()));
+    });
+  });
+
   group('tri', () {
     test('sortByPriority trie de high à low', () {
       service.addTask(buildTask("Basse", priority: Priority.low));
@@ -133,6 +155,17 @@ void main() {
 
       expect(sorted.first.title, "Bientôt");
       expect(sorted.last.title, "Plus tard");
+    });
+
+    test('sortByDeadline place les tâches sans échéance à la fin', () {
+      final now = DateTime.now();
+      service.addTask(buildTask("Sans échéance", withDeadline: false));
+      service.addTask(buildTask("Avec échéance", deadline: now));
+
+      final sorted = service.sortByDeadline();
+
+      expect(sorted.first.title, "Avec échéance");
+      expect(sorted.last.title, "Sans échéance");
     });
   });
 }

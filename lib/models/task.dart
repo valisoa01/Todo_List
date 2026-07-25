@@ -3,19 +3,23 @@ import 'priority_enum.dart';
 class Task {
   String _title;
   Priority _priority;
-  DateTime _deadline;
+  DateTime? _deadline;
+  bool _completed;
 
   Task({
     required String title,
     required Priority priority,
-    required DateTime deadline,
+    DateTime? deadline,
+    bool completed = false,
   })  : _title = title,
         _priority = priority,
-        _deadline = deadline;
+        _deadline = deadline,
+        _completed = completed;
 
   String get title => _title;
   Priority get priority => _priority;
-  DateTime get deadline => _deadline;
+  DateTime? get deadline => _deadline;
+  bool get completed => _completed;
 
   set title(String value) {
     if (value.trim().isNotEmpty) {
@@ -27,19 +31,25 @@ class Task {
     _priority = value;
   }
 
-  set deadline(DateTime value) {
+  set deadline(DateTime? value) {
     _deadline = value;
+  }
+
+  set completed(bool value) {
+    _completed = value;
   }
 
   Task copyWith({
     String? title,
     Priority? priority,
     DateTime? deadline,
+    bool? completed,
   }) {
     return Task(
       title: title ?? _title,
       priority: priority ?? _priority,
       deadline: deadline ?? _deadline,
+      completed: completed ?? _completed,
     );
   }
 
@@ -47,7 +57,8 @@ class Task {
     return {
       "title": _title,
       "priority": _priority.name,
-      "deadline": _deadline.toIso8601String(),
+      "deadline": _deadline?.toIso8601String(),
+      "completed": _completed,
     };
   }
 
@@ -57,12 +68,16 @@ class Task {
       priority: Priority.values.firstWhere(
         (p) => p.name == json["priority"],
       ),
-      deadline: DateTime.parse(json["deadline"]),
+      deadline:
+          json["deadline"] != null ? DateTime.parse(json["deadline"]) : null,
+      completed: json["completed"] ?? false,
     );
   }
 
   @override
   String toString() {
-    return "Task(title: $_title, priority: $_priority, deadline: $_deadline)";
+    final status = _completed ? "terminée" : "en cours";
+    final dl = _deadline != null ? _deadline.toString() : "aucune échéance";
+    return "Task(title: $_title, priority: $_priority, deadline: $dl, statut: $status)";
   }
 }
